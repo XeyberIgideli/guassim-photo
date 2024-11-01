@@ -1,0 +1,69 @@
+{% extends "../base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/css/lightgallery.css'>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/css/lg-zoom.css'>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.css'> 
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/css/lg-thumbnail.css'> 
+
+<div class="collection_header mt-5 d-flex flex-column align-items-center" style="gap:15px;">
+        <h2 class="display-6 ">{{collection.title}}</h2>
+        {% if collection.enable_folder_download %}
+            <a href="{{collection.google_drive_folder_download_link}}" class="d-flex flex-row align-items-center justify-content-center py-2 px-3" style="gap:10px;border: 1px solid black; border-radius:5px;">
+                <p class="m-auto">{% trans "Download the collection" %}</p>
+                <i style="color:black; font-size:10px;" class="fa fa-download"></i>
+            </a>
+        {% endif %}
+  </div>
+<div class="gallery__page category_page">
+    <div class="container-md">
+        <div class="row justify-content-center">
+          <div class="col col-md-12">
+            <div class="gallery-container" id="animated-thumbnails-gallery">
+              {% for photo in photos%}
+                <a data-download-url="https://drive.google.com/uc?export=download&id={{photo.google_drive_photo_id}}"  class="gallery-item" data-src="{{photo.url}}=w1600-q80" data-sub-html="<h4>Photo by -  Guassim</h4><p> {{photo.description}}</p>">
+                    <img alt="{{photo.alt_text}}" class="img-responsive" src="{{photo.url}}=w540-q80" />
+                </a>
+              {%endfor%}
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/lightgallery.umd.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/plugins/zoom/lg-zoom.umd.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/plugins/thumbnail/lg-thumbnail.umd.js'></script> 
+<script>
+    jQuery("#animated-thumbnails-gallery")
+  .justifiedGallery({
+    captions: false, 
+    rowHeight: 490,
+    margins: 6,
+    download: true, 
+  })
+  .on("jg.complete", function () {
+    window.lightGallery(
+      document.getElementById("animated-thumbnails-gallery"),
+      {
+        autoplayFirstVideo: false,
+        pager: false,
+        galleryId: "nature",
+        plugins: [lgZoom],
+        download: true,
+        mobileSettings: {
+          controls: false,
+          showCloseIcon: false,
+          download: false,
+          rotate: false
+        }
+      }
+    );
+  });
+
+</script>
+{% endblock %}

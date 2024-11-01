@@ -1,0 +1,20 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block content %}
+ 
+<div class="gallery__page">
+    <div class="gallery__warp">
+        <div class="row">
+            {% for collection in collections%}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <a class="collection_link" href="/collection/{{ collection.slug }}" >
+                    <img src="{{ collection.image.url }}" alt="">
+                    <h3>{{collection.title}}</h3> 
+                </a>
+            </div>  
+            {%endfor%}
+        </div>
+    </div>
+</div>
+{% endblock %}

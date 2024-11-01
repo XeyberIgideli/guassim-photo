@@ -1,0 +1,225 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+	<title>{{site_settings.title}}</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="{{site_settings.description}}">
+	<meta name="keywords" content="{{site_settings.keywords}}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="{% static 'core/css/bootstrap.min.css' %}"/> 
+	<link rel="stylesheet" href="{% static 'core/css/slicknav.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'core/css/fresco.css' %}"/>
+	<link rel="stylesheet" href="{% static 'core/css/slick.css' %}"/>
+
+	<!-- Main Stylesheets -->
+    {% block stylesheet %}
+	<link rel="stylesheet" href="{% static 'core/css/style.css' %}"/>
+    {% endblock stylesheet %} 
+
+</head>
+<style>
+
+	.language-form {
+		display: inline-block;
+		position: relative;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	  }
+	  
+	  .select-wrapper {
+		position: relative;
+		display: inline-block;
+	  }
+	  
+	  .language-form select {
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		background-color: white;
+		border: 2px solid black;
+		border-radius: 0;
+		padding: 10px 40px 10px 15px;
+		font-size: 16px;
+		color: black;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		min-width: 200px;
+	  }
+	  
+	  .language-form select:hover,
+	  .language-form select:focus {
+		outline: none;
+		background-color: #f0f0f0;
+	  }
+	  
+	  .icon {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		pointer-events: none;
+		width: 24px;
+		height: 24px;
+	  }
+	  
+	  .language-form select option {
+		background-color: white;
+		color: black;
+	  }
+	  
+	  /* Custom dropdown arrow */
+	  .select-wrapper::after {
+		content: '';
+		position: absolute;
+		right: 15px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 0;
+		height: 0;
+		border-left: 5px solid transparent;
+		border-right: 5px solid transparent;
+		border-top: 5px solid black;
+		pointer-events: none;
+	  }
+	  
+	  /* Hover effect */
+	  .select-wrapper:hover::after {
+		border-top-color: #333;
+	  }
+	  
+	  /* Focus effect */
+	  .language-form select:focus + .icon {
+		stroke: #333;
+	  }
+
+</style>
+<body>
+	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
+
+	<!-- Header Section -->
+	<header class="header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-4 col-md-3 order-2 order-sm-1">
+					<div class="header__social">
+						<a href="{{site_settings.facebook}}"><i class="fa fa-facebook"></i></a>
+						<a href="{{site_settings.instagram}}"><i class="fa fa-instagram"></i></a>
+						<a href="{{site_settings.behance}}"><i class="fa fa-behance"></i></a>
+					</div>
+				</div>
+				<div class="col-sm-4 col-md-6 order-1  order-md-2 text-center">
+					<a href="./index.html" class="site-logo">
+						<h2>Guassim</h2>
+						<!-- <img src="img/logo.png" alt=""> -->
+					</a>
+				</div>
+				<div class="col-sm-4 col-md-3 order-3 order-sm-3">
+					<div class="header__switches">
+						<a href="#" class="nav-switch"><i class="fa fa-bars"></i></a>
+						<form action="{% url 'change_language' %}" method="get" class="language-form">
+							<div class="select-wrapper">
+							  <select name="language" onchange="this.form.submit()">
+								{% get_current_language as CURRENT_LANGUAGE %}
+								{% get_available_languages as LANGUAGES %}
+								{% for lang_code, lang_name in LANGUAGES %}
+								  <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+									{{ lang_name }}
+								  </option>
+								{% endfor %}
+							  </select>
+							  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<circle cx="12" cy="12" r="10"></circle>
+								<line x1="2" y1="12" x2="22" y2="12"></line>
+								<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+							  </svg>
+							</div>
+						  </form>
+						
+						
+					</div>
+				</div>
+			</div>
+			<nav class="main__menu">
+				<ul class="nav__menu">
+					<li><a class="parent_href" href="/" >{% trans "Home" %}</a></li>
+					<li><a class="parent_href" href="/about/">{% trans "About" %}</a></li> 
+					<li><a class="parent_href coll" style="cursor:pointer;">{% trans "Collections" %}</a>
+						<ul class="sub__menu">
+							{% for c in categories %}
+							<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
+							{%endfor%}
+						</ul>
+					</li>
+					<li><a class="parent_href" href="/blog/">{% trans "Blog" %}</a>
+						<ul class="sub__menu">
+							<li><a href="./blog-single.html">Blog Single</a></li>
+						</ul>
+					</li>
+					<li><a class="parent_href" href="/contact/">{% trans "Contact" %}</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<!-- Header Section end -->
+
+	<!-- Hero Section -->
+    <div >{% block content %} {% endblock %}</div>
+	<!-- Hero Section end -->
+
+	<!-- Footer Section -->
+	<!-- <footer class="footer__section">
+	 
+	</footer> -->
+	<!-- Footer Section end -->
+
+	<!-- Search Begin -->
+	<div class="search-model">
+		<div class="h-100 d-flex align-items-center justify-content-center">
+			<div class="search-close-switch">+</div>
+			<form class="search-model-form">
+				<input type="text" id="search-input" placeholder="Search here.....">
+			</form>
+		</div>
+	</div>
+	<script>
+		const getLanguageFromCookie = () => {
+			const cookies = document.cookie.split('; ');
+			const languageCookie = cookies.find(cookie => cookie.startsWith("django_language"));
+			return languageCookie ? languageCookie.split('=')[1] : ''; 
+		};
+	
+		const language = getLanguageFromCookie();
+		const currentPath = window.location.pathname;  
+		const collectionHref = document.querySelector(".coll")
+		const menuHrefs = document.querySelectorAll('.parent_href');
+		Array.from(menuHrefs).map(item => { 
+			const newPath = "/" + language + item.getAttribute('href') ;
+			console.log(currentPath, newPath)
+			if (currentPath === newPath) {
+				item.classList.add("menu--active")
+			}
+
+			
+		});
+
+		if (currentPath.includes("category")) {
+			collectionHref.classList.add("menu--active")
+		}
+	</script>
+	
+	<!--====== Javascripts & Jquery ======-->
+	<script src="{% static 'core/js/font-awesome.js' %}"></script>
+	<script src="{% static 'core/js/vendor/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'core/js/jquery.slicknav.min.js' %}"></script> 
+	<script src="{% static 'core/js/slick.min.js' %}"></script>
+	<script src="{% static 'core/js/fresco.min.js' %}"></script> 
+	<script src="{% static 'core/js/main.js' %}"></script>
+
+
+	</body>
+</html>

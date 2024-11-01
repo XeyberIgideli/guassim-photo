@@ -1,0 +1,22 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero__section">
+    <div class="hero-slider" >
+        {% for photo in photos  %}
+        <div class="slide-item">
+            <p >
+                <img src="{{photo.url}}" alt="">
+            </p>
+        </div>  
+        {% endfor %}
+         
+    </div>
+    <div class="hero-text-slider">
+        <div class="text-item">
+            <h2></h2> 
+        </div> 
+    </div> 
+</section>
+{% endblock %}
