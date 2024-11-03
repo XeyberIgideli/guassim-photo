@@ -8,28 +8,27 @@
 <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.css'> 
 <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/lightgallery@2.0.0-beta.3/css/lg-thumbnail.css'> 
 
-{% if share_disk%}
 <style>
   .gallery-item {
     position: relative;
   }
-.gallery-item::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.gallery-item:hover::after {
-  opacity:1;
-}
-.gallery-item img {
-    cursor: zoom-in; /* Apply zoom-in cursor only to the image */
-}
+  .gallery-item::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .gallery-item:hover::after {
+    opacity:1;
+  }
+  .gallery-item img {
+      cursor: zoom-in; /* Apply zoom-in cursor only to the image */
+  }
 
   .hover-icons {
       position: absolute;
@@ -49,7 +48,7 @@
   .hover-icons i {
       color: white; 
       padding: 5px; 
-      font-size: 20px;
+      font-size: 14px;
       cursor: pointer;  
   }
 
@@ -112,22 +111,41 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+  } 
+  .confirm-btn .m-auto {
+    color:white;
+  }
+  .confirm-btn {
+    background-color:black!important;
+    color:white!important;
+    transition: all 0.3s ease;
+  }
+  .confirm-btn:hover {
+    color:black!important;
+    background-color: white!important;
+    transition: all 0.3s ease;
+
+  }
+  .confirm-btn:hover .m-auto{
+    color: black;
+    transition: all 0.3s ease;
   }
 </style>
-{% endif %}
 <div class="collection_header mt-5 d-flex flex-column align-items-center" style="gap:15px;">
-    <h2 class="display-6 ">{{collection.title}}</h2>
-    {% if share_disk and collection.enable_folder_download %}
+    <h2 class="display-6 ">{{favorites.name}}</h2>
         <div class="d-flex flex-row" style="gap:15px;">
+          <button style="border:none; outline:none; background-color:transparent;">
+            <span class="favCount"><span>
+            <i class="fa fa-heart hover-link favorite fav_project"></i> 
+          </button>
           <button class="share-project" style="border:none; outline:none; background-color:transparent;">
             <i style="color:black; font-size:20px; " class="fa fa-paper-plane"></i>
           </button>
-          <a href="{{collection.google_drive_folder_download_link}}" class="d-flex flex-row align-items-center justify-content-center py-2 px-3 download_btn" style="gap:10px;border: 1px solid black; border-radius:5px;">
-            <i style="color:black; font-size:10px;" class="fa fa-download"></i>
-            <p class="m-auto">{% trans "Download the collection" %}</p>
+          <a href="" class="d-flex flex-row align-items-center justify-content-center py-2 px-3 confirm-btn" style="gap:10px;border: 1px solid black; border-radius:5px;">
+            <i style="font-size:10px;" class="fa fa-share"></i>
+            <p class="m-auto font-bold">Confirm the selection</p>
           </a>
         </div>
-    {% endif %}
 </div>
 
 <div class="gallery__page category_page">
@@ -171,38 +189,7 @@
       <a><i class="fa fa-facebook"></i></a>
     </div>
   </div>
-</div>
-
-<!-- Photo Selection Modal -->
-<div id="PhotoSelect" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closePhotoSelection()">&times;</span>
-    <div style="text-align:center;">
-      <h4>{% trans "Photo selection" %}</h4>
-      <p class="text-gray">Notify the photographer for editing or send a message.</p>
-    </div>
-    <form class="photo_select_form" method="POST" action="" >
-      {% csrf_token %}
-      <div class="form-group">
-        <input type="input" class="form-control" required name="name" id="name" aria-describedby="name" placeholder="Your name and surname">
-      </div>
-      <div class="form-group">
-        <input type="phone" class="form-control" name="phone" required id="phone" placeholder="Phone">
-      </div>
-      <div class="form-group"> 
-        <select class="form-control" name="reason" required>
-          <option value="Inform the photographer for edit">Inform the photographer for edit</option> 
-          <option value="Liked the photo">Liked the photo</option> 
-        </select>
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" required name="message" rows="3" placeholder="Your message"></textarea>
-      </div> 
-      <button type="submit" style="width:50%;align-self:center;background-color:black;" class="btn btn-dark createFavorite">Continue</button>
-    </form>
-    
-  </div>
-</div>
+</div> 
 {% endif %}
 
 <script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.js'></script>
@@ -279,32 +266,102 @@
   const favoriteButtons = document.querySelectorAll('.favorite')
   const createFavorite = document.querySelector('.createFavorite')
   const photoForm = document.querySelector(".photo_select_form")
-  const favCheck = localStorage.getItem('favCheck')
+  const favStorage = JSON.parse(localStorage.getItem('favorites'))
   const favProject = document.querySelector('.fav_project')
-
   favoriteButtons.forEach(item => {
       item.addEventListener('click', (e) => {
           e.preventDefault();  
           const favorites = JSON.parse(localStorage.getItem('favorites')) || []
           photoId = e.target.dataset.id;
- 
-          if (favCheck) {
+          if (favorites[shareDisk]) {
+            if (photoId) {
+              toggleFavorite(photoId)
+            }
+          } else {
             openPhotoSelection()
-
-          }  
+          }
       });
   });     
-  function addFavorite() {
-
+  if (favStorage &&(favStorage[shareDisk]?.length > -1)) { 
+    favProject.addEventListener('click', () => {  
+        window.location.replace(`${host}/${language ? language : 'en'}/collection/favorites/${shareDisk}`);
+    })
   }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    updateFavoriteIcons();
+  });
+
+  function toggleFavorite(photoId) {
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || []; 
+    if (Object.keys(favorites).length > 0){ 
+      if (favorites[shareDisk]?.includes(photoId)) {
+        favorites[shareDisk] = favorites[shareDisk].filter(id => id !== photoId);
+      } else {
+        favorites[shareDisk].push(photoId);
+      }
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+
+    updateFavoriteIcons();
+  }
+
+  function updateFavoriteIcons() {
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    
+    favoriteButtons.forEach(item => {
+        let photoId = item.dataset.id;
+
+        if(Object.keys(favorites).length > 0) {
+          if (favorites[shareDisk]?.includes(photoId)) {
+            item.classList.add("added");
+          } else {
+            item.classList.remove("added");
+          }
+        }
+    });
+  }
+
+  async function addFavorite () {
+      const target = `${host}/${language ? language : "en"}/collection/add_favorite/`
+      const data = {slug:localStorage.getItem("fav"), photo_id: photoId} 
+      try {
+        const response = await fetch(target, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+              'X-CSRFToken': csrfmiddlewaretoken,  
+              'Content-Type': 'application/json',
+              "Accept": "application/json",
+
+          }
+          }) 
+        const dataJson = await response.json()  
+        console.log(dataJson)
+      } catch (err) {
+        console.log(err)
+      }
+  }
+
   photoForm.addEventListener('submit', (event) => {
     event.preventDefault();   
     const formData = new FormData(photoForm)
     localStorage.setItem("favCheck", true);
-    formData.append('photoId', photoId); 
-    formData.append('collectionId', collectionId); 
-    formData.append('collection_slug', "{{collection.slug}}");
+    localStorage.setItem("fav", generateGuid());
+   
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+ 
+    if (!favorites[shareDisk]) {
+      favorites[shareDisk] = [];
+    }
+    localStorage.setItem("favorites", JSON.stringify(favorites));
 
+    formData.append('collectionId', collectionId);
+    formData.append('photoId', photoId);
+    formData.append('fav_id', localStorage.getItem("fav"));
+
+    /*
     fetch(`${host}/${language ? language : "en"}/collection/create_favorite/`, {
         method: 'POST',
         body: formData,
@@ -312,19 +369,14 @@
             'X-CSRFToken': csrfmiddlewaretoken,  
         }
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Something bad happened!")
-      }
-      return response.json()
-    })
+    .then(response => response.json())
     .then(data => { 
-        closePhotoSelection() 
-        alert("Your message has been sent!")
+        closePhotoSelection()
     })
     .catch(error => {
         console.error("Error:", error); 
     });
+    */
   });
 
 

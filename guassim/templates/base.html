@@ -18,7 +18,7 @@
     {% block stylesheet %}
 	<link rel="stylesheet" href="{% static 'core/css/style.css' %}"/>
     {% endblock stylesheet %} 
-
+	<script src="{% static 'core/js/utils.js' %}"></script>
 </head>
 <style>
 
@@ -186,20 +186,23 @@
 			</form>
 		</div>
 	</div>
-	<script>
-		const getLanguageFromCookie = () => {
-			const cookies = document.cookie.split('; ');
-			const languageCookie = cookies.find(cookie => cookie.startsWith("django_language"));
-			return languageCookie ? languageCookie.split('=')[1] : ''; 
-		};
+
 	
-		const language = getLanguageFromCookie();
+	<!--====== Javascripts & Jquery ======-->
+	<script src="{% static 'core/js/font-awesome.js' %}"></script>
+	<script src="{% static 'core/js/vendor/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'core/js/jquery.slicknav.min.js' %}"></script> 
+	<script src="{% static 'core/js/slick.min.js' %}"></script>
+	<script src="{% static 'core/js/fresco.min.js' %}"></script> 
+	<script src="{% static 'core/js/main.js' %}"></script>
+
+	<script>
+
 		const currentPath = window.location.pathname;  
 		const collectionHref = document.querySelector(".coll")
 		const menuHrefs = document.querySelectorAll('.parent_href');
 		Array.from(menuHrefs).map(item => { 
-			const newPath = "/" + language + item.getAttribute('href') ;
-			console.log(currentPath, newPath)
+			const newPath = "/" + language + item.getAttribute('href') ; 
 			if (currentPath === newPath) {
 				item.classList.add("menu--active")
 			}
@@ -211,15 +214,5 @@
 			collectionHref.classList.add("menu--active")
 		}
 	</script>
-	
-	<!--====== Javascripts & Jquery ======-->
-	<script src="{% static 'core/js/font-awesome.js' %}"></script>
-	<script src="{% static 'core/js/vendor/jquery-3.2.1.min.js' %}"></script>
-	<script src="{% static 'core/js/jquery.slicknav.min.js' %}"></script> 
-	<script src="{% static 'core/js/slick.min.js' %}"></script>
-	<script src="{% static 'core/js/fresco.min.js' %}"></script> 
-	<script src="{% static 'core/js/main.js' %}"></script>
-
-
 	</body>
 </html>

@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default=False)  
 ALLOWED_HOSTS = ['localhost', '127.0.0.1'] 
-
+SITE_LINK = "127.0.0.1:8000"
 
 # Application definition
 
@@ -126,6 +126,7 @@ LANGUAGES = [
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
+print(LOCALE_PATHS)
 USE_TZ = True
 LANGUAGE_COOKIE_NAME = 'django_language'
 LANGUAGE_SESSION_KEY = 'django_language'

@@ -20,6 +20,8 @@ import uuid
 from tinymce.models import HTMLField
 from .utils import unique_image_path
 from functools import partial
+from django.utils.html import format_html
+
 # Create your models here. 
 class About(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("Name"))
@@ -115,7 +117,7 @@ class Collection(models.Model):
     google_drive_folder_link = models.CharField(max_length=250, null=True, blank=True)  
     enable_folder_download = models.BooleanField(default=False, verbose_name="Enable folder download")
     google_drive_folder_download_link = models.URLField(null=True, blank=True)
-    
+    share_to_customer = models.URLField(null=True, blank=True)
     def save(self, *args, **kwargs): 
         is_new = self.pk is None
         should_process_drive = False
@@ -209,10 +211,9 @@ class Collection(models.Model):
             
             # Generate direct download link for the ZIP
             download_link = f"https://drive.google.com/uc?export=download&id={zip_file['id']}"
-            
+            self.share_to_customer = settings.SITE_LINK + f'/collection/{self.slug}?share={uuid.uuid4()}'
             self.google_drive_folder_download_link = download_link
             self.save()    
-        
         # Create photos using self.id
         for item in items: 
             Photo.objects.create(
@@ -222,8 +223,7 @@ class Collection(models.Model):
             )
             
     def delete(self, *args, **kwargs): 
-        if self.image:
-            print(self.image.name)
+        if self.image: 
             if default_storage.exists(self.image.name):
                 default_storage.delete(self.image.name)
  
@@ -233,7 +233,7 @@ class Collection(models.Model):
         return self.title
     
 class Photo(models.Model): 
-    url = models.CharField(max_length=250) 
+    url = models.URLField() 
     alt_text = models.TextField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='photos')   
@@ -245,12 +245,33 @@ class Photo(models.Model):
     def __str__(self):
         return self.url
     
-class Messages(models.Model):
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    message = models.TextField()
+class Favorites(models.Model):
+    name = models.CharField(max_length=100, blank=False)
+    phone = models.CharField(max_length=20, blank=False)
+    message = models.TextField(blank=False)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='favorites', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='photos', null=True)
+    reason = models.CharField(max_length=250, blank=False,null=True)
+    class Meta:
+        verbose_name = _("Favorites")
+        verbose_name_plural = _("Favorites")
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+    
+    def message_reason (self):
+        if self.reason:
+            return format_html(f'<span style="color: #ffc107;">{self.reason}</span>')
+        return "No Reason"
+        
+    def image_tag(self):
+        if self.photo and hasattr(self.photo, 'url'):  
+            return format_html(f'<img src="{self.photo.url}"  height="300" />')
+        return "No Image"  
     def __str__(self):
-        return f"Message from {self.name} about {self.photo}"    
+        return self.name
+    
+ 
+     
+   

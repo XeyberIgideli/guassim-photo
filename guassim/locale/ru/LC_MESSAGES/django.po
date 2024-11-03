@@ -99,3 +99,33 @@ msgstr "Имя"
 
 msgid "Message"
 msgstr "Сообщение" 
+
+msgid "Share this photo"
+msgstr "Поделитесь этим фото" 
+
+msgid "Copy link"
+msgstr "Копировать ссылку" 
+
+msgid "Or share via social media"
+msgstr "Или поделитесь в социальных сетях" 
+
+msgid "Photo selection"
+msgstr "Отбор фотографий" 
+
+msgid "Your name and surname"
+msgstr "Имя и фамилия" 
+
+msgid "Your message"
+msgstr "Ваше сообщение" 
+
+msgid "Inform the photographer for edit"
+msgstr "Сообщите фотографу для редактирования" 
+
+msgid "I liked the photo"
+msgstr "Мне понравилась фотография" 
+
+msgid "Continue"
+msgstr "Продолжить" 
+
+msgid "Notify the photographer for editing or send a message."
+msgstr "Сообщите фотографу о необходимости редактирования или отправьте сообщение." 

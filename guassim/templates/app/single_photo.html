@@ -1,0 +1,13 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block content %}
+ 
+<div class="container-lg mt-5 mx-auto  d-flex flex-column justify-content-center align-items-center" style="gap:15px">
+    <img src="{{ photo.url }}=w470-q80" style="max-width: 100%; height: auto;" class="img-fluid" alt="Resim">
+    <a href="{{collection.google_drive_folder_download_link}}" class="d-flex flex-row align-items-center justify-content-center py-2 px-3" style="gap:10px;border: 1px solid black; border-radius:5px;">
+        <i style="color:black; font-size:0.6rem;" class="fa fa-download"></i>
+        <p class="m-auto" style="font-size:0.6rem;">Download photo</p>
+    </a>
+</div>
+{% endblock %}
