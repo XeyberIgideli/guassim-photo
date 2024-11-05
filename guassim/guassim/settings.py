@@ -125,8 +125,7 @@ LANGUAGES = [
 ]
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
-]
-print(LOCALE_PATHS)
+] 
 USE_TZ = True
 LANGUAGE_COOKIE_NAME = 'django_language'
 LANGUAGE_SESSION_KEY = 'django_language'

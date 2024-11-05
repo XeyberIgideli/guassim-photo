@@ -160,11 +160,11 @@
   <div class="modal-content">
     <span class="close" onclick="closeShareLinkModal()">&times;</span>
     <div style="text-align:center;">
-      <h4>Share this photo</h4>
+      <h4>{% trans "Share this photo" %}</h4>
     </div>
     <input type="text" class="form-control linkInput" readonly placeholder="" aria-label="{{request.get_full_path}}" aria-describedby="basic-addon2">
-    <button type="button" style="width:50%;align-self:center;background-color:black;" class="btn btn-dark copyLinkButton"><i style="font-size:10px;" class="fa fa-link"></i>  Copy link</button>
-    <p class="text-center">Or share via social media</p>
+    <button type="button" style="width:50%;align-self:center;background-color:black;" class="btn btn-dark copyLinkButton"><i style="font-size:10px;" class="fa fa-link"></i>  {% trans "Copy link" %}</button>
+    <p class="text-center">{% trans "Or share via social media" %}</p>
     <div class="d-flex flex-row align-items-center justify-content-center" style="gap:15px;">
       <a><i class="fa fa-whatsapp"></i></a>
       <a><i class="fa fa-instagram"></i></a>
@@ -179,26 +179,26 @@
     <span class="close" onclick="closePhotoSelection()">&times;</span>
     <div style="text-align:center;">
       <h4>{% trans "Photo selection" %}</h4>
-      <p class="text-gray">Notify the photographer for editing or send a message.</p>
+      <p class="text-gray">{% trans "Notify the photographer for editing or send a message." %}</p>
     </div>
     <form class="photo_select_form" method="POST" action="" >
       {% csrf_token %}
       <div class="form-group">
-        <input type="input" class="form-control" required name="name" id="name" aria-describedby="name" placeholder="Your name and surname">
+        <input type="input" class="form-control" required name="name" id="name" aria-describedby="name" placeholder="{% trans "Your name and surname" %}">
       </div>
       <div class="form-group">
-        <input type="phone" class="form-control" name="phone" required id="phone" placeholder="Phone">
+        <input type="phone" class="form-control" name="phone" required id="phone" placeholder="{% trans "Phone" %}">
       </div>
       <div class="form-group"> 
         <select class="form-control" name="reason" required>
-          <option value="Inform the photographer for edit">Inform the photographer for edit</option> 
-          <option value="Liked the photo">Liked the photo</option> 
+          <option value="Inform the photographer for edit">{% trans "Inform the photographer for edit" %}</option> 
+          <option value="Liked the photo">{% trans "Liked the photo" %}</option> 
         </select>
       </div>
       <div class="form-group">
-        <textarea class="form-control" required name="message" rows="3" placeholder="Your message"></textarea>
+        <textarea class="form-control" required name="message" rows="3" placeholder="{% trans "Your message" %}"></textarea>
       </div> 
-      <button type="submit" style="width:50%;align-self:center;background-color:black;" class="btn btn-dark createFavorite">Continue</button>
+      <button type="submit" style="width:50%;align-self:center;background-color:black;" class="btn btn-dark createFavorite">{% trans "Continue" %}</button>
     </form>
     
   </div>

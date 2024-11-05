@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from mptt.models import TreeForeignKey, MPTTModel
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _ # type: ignore
+from django.utils.text import slugify 
 from django.core.files.storage import default_storage 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build 
@@ -108,13 +107,13 @@ class Category (MPTTModel):
 
 
 class Collection(models.Model):
-    title = models.CharField(max_length=100) 
+    title = models.CharField(max_length=100, blank=True) 
     image = models.ImageField(verbose_name=_("Image"),upload_to=partial(unique_image_path, folder_name="collections"), help_text=_("Please add image"), max_length=255, null=True)
     description = models.TextField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True) 
     category = models.ForeignKey(Category, on_delete=models.RESTRICT, null=True)
-    slug = models.SlugField(verbose_name="Collection slug", max_length=255, unique=True, null=True, blank=True)
-    google_drive_folder_link = models.CharField(max_length=250, null=True, blank=True)  
+    slug = models.SlugField(verbose_name="Collection slug", max_length=255, unique=True, null=True)
+    google_drive_folder_link = models.CharField(max_length=250, null=True)  
     enable_folder_download = models.BooleanField(default=False, verbose_name="Enable folder download")
     google_drive_folder_download_link = models.URLField(null=True, blank=True)
     share_to_customer = models.URLField(null=True, blank=True)
@@ -168,7 +167,10 @@ class Collection(models.Model):
             scopes=['https://www.googleapis.com/auth/drive']
         )
         service = build('drive', 'v3', credentials=credentials)
-          
+        
+        folder_metadata = service.files().get(fileId=folder_id, fields="name").execute()
+        folder_name = folder_metadata.get("name")  
+        
         results = service.files().list(
             q=f"'{folder_id}' in parents and mimeType contains 'image/'",
             fields="files(id, name, webViewLink)"
@@ -213,6 +215,7 @@ class Collection(models.Model):
             download_link = f"https://drive.google.com/uc?export=download&id={zip_file['id']}"
             self.share_to_customer = settings.SITE_LINK + f'/collection/{self.slug}?share={uuid.uuid4()}'
             self.google_drive_folder_download_link = download_link
+            self.title = folder_name
             self.save()    
         # Create photos using self.id
         for item in items: 

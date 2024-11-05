@@ -13,7 +13,4 @@ urlpatterns = [
     path('collection/create_favorite/', views.create_favorite, name='create_favorite'),
     path('contact/', views.page_contact, name='page_contact'),
     path('photo/id/<int:pk>', views.photo_detail, name='photo_detail'),
-    path('images/<path:path>', serve, {
-        'document_root': settings.MEDIA_ROOT / 'images'
-    }),
 ]

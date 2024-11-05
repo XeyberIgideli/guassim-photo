@@ -1,11 +1,13 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import About, Category
+
+from .models import About, Category, Collection, Favorites
 
 class AboutTranslationOptions(TranslationOptions):
     fields = ('name', 'description', 'text1', 'text2', 'section1', 'section2', 'section3')
     
 class CategoryTranslationOptions(TranslationOptions):
-    fields = ('name',)
+    fields = ('name',) 
     
 translator.register(About, AboutTranslationOptions)    
-translator.register(Category, CategoryTranslationOptions)    
+translator.register(Category, CategoryTranslationOptions)   
+  
